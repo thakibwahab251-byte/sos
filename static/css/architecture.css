@@ -1,0 +1,269 @@
+/* ===================================================================
+   SENTINEL AI - Architecture Explorer & Signal Fusion Sandbox
+   Faithfully styling the architecture diagram from Image 2
+   =================================================================== */
+
+.arch-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.arch-header {
+  text-align: center;
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+.arch-header h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+}
+
+.arch-diagram-wrapper {
+  background: #000;
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem 2rem;
+  box-shadow: var(--shadow-lg), 0 0 50px rgba(0, 0, 0, 0.9);
+  max-width: 980px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.diagram-title-banner {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* Layer Boxes matching Image 2 */
+.arch-layer-box {
+  background: #081120;
+  border: 1px solid rgba(0, 162, 255, 0.25);
+  border-radius: var(--radius-sm);
+  padding: 1.4rem 1.5rem;
+  text-align: center;
+  position: relative;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.arch-layer-box:hover {
+  border-color: var(--cyan);
+  box-shadow: 0 0 25px rgba(0, 240, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+.arch-box-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #fff;
+  margin-bottom: 0.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.arch-box-subtitle {
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+
+/* Down Flow Connector Arrow */
+.flow-arrow-down {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.8rem 0;
+  color: #475569;
+  font-size: 1.25rem;
+  position: relative;
+}
+
+.flow-arrow-down::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(0, 240, 255, 0.4) 100%);
+}
+
+/* 4 Middle Parallel Engines (Image 2) */
+.parallel-engines-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .parallel-engines-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.engine-node-box {
+  background: #021a14;
+  border: 1px solid rgba(0, 229, 153, 0.3);
+  border-radius: var(--radius-sm);
+  padding: 1.1rem 1.25rem;
+  text-align: left;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.engine-node-box:hover {
+  border-color: var(--emerald);
+  box-shadow: 0 0 20px rgba(0, 229, 153, 0.25);
+  transform: translateY(-2px);
+}
+
+.engine-node-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.engine-node-desc {
+  font-size: 0.82rem;
+  color: #86efac;
+}
+
+/* AI DECISION ENGINE Layer (Deep Purple) */
+.decision-engine-box {
+  background: #170d24;
+  border: 1px solid rgba(168, 85, 247, 0.35);
+}
+
+.decision-engine-box:hover {
+  border-color: var(--purple);
+  box-shadow: 0 0 25px rgba(168, 85, 247, 0.35);
+}
+
+.decision-engine-box .arch-box-subtitle {
+  color: #d8b4fe;
+}
+
+/* EMERGENCY RESPONSE ENGINE Layer (Deep Bronze/Crimson) */
+.response-engine-box {
+  background: #241208;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+.response-engine-box:hover {
+  border-color: var(--amber);
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.35);
+}
+
+.response-engine-box .arch-box-subtitle {
+  color: #fde68a;
+}
+
+/* Bottom 2 Consumers Layer */
+.consumers-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 600px) {
+  .consumers-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.consumer-box {
+  background: #021a14;
+  border: 1px solid rgba(0, 229, 153, 0.25);
+  border-radius: var(--radius-sm);
+  padding: 1.1rem 1.25rem;
+  text-align: center;
+}
+
+.consumer-box:hover {
+  border-color: var(--emerald);
+  box-shadow: 0 0 20px rgba(0, 229, 153, 0.25);
+}
+
+/* Sandbox & Testbench */
+.fusion-sandbox-card {
+  background: var(--surface-card);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  padding: 2rem;
+  margin-top: 1rem;
+}
+
+.sandbox-controls-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.slider-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.slider-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.slider-val {
+  font-family: var(--font-mono);
+  color: var(--cyan);
+}
+
+.custom-range {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  background: #1e293b;
+  border-radius: 3px;
+  outline: none;
+}
+
+.custom-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--cyan);
+  cursor: pointer;
+  box-shadow: 0 0 10px var(--cyan);
+}
+
+.fusion-result-banner {
+  background: rgba(13, 18, 29, 0.85);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-sm);
+  padding: 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}

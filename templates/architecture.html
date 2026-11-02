@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+
+{% block title %}SENTINEL AI Architecture & Signal Fusion Sandbox{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/architecture.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="arch-container">
+
+  <!-- Header -->
+  <div class="arch-header">
+    <div style="display: flex; justify-content: center; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+      <span class="badge badge-active">SYSTEM TOPOLOGY</span>
+      <span class="badge badge-resolved">IMAGE 2 SPECIFICATION</span>
+    </div>
+    <h1>SENTINEL AI Architecture</h1>
+    <p style="color: var(--text-muted); font-size: 1.05rem;">
+      Multi-modal signal fusion pipeline designed to detect high-urgency distress situations even when a user cannot unlock their phone or interact normally.
+    </p>
+  </div>
+
+  <!-- Main Architecture Diagram (Faithful reproduction of Image 2) -->
+  <div class="arch-diagram-wrapper">
+    <div class="diagram-title-banner">
+      <span>📐</span> SENTINEL AI Architecture
+    </div>
+
+    <!-- LAYER 1: MOBILE APPLICATION -->
+    <div class="arch-layer-box" id="node-mobile-app">
+      <div class="arch-box-title">
+        <span>📱</span> MOBILE APPLICATION
+      </div>
+      <div class="arch-box-subtitle">
+        Android · Safety mode · SOS trigger · GPS
+      </div>
+    </div>
+
+    <!-- Flow Arrow -->
+    <div class="flow-arrow-down">↓</div>
+
+    <!-- LAYER 2: 4 PARALLEL ENGINES -->
+    <div class="parallel-engines-grid">
+      <!-- Voice AI -->
+      <div class="engine-node-box" id="node-voice-ai">
+        <div class="engine-node-title">
+          <span>🎙️</span> Voice AI
+        </div>
+        <div class="engine-node-desc">
+          Speech recognition and configured distress phrases (Whisper / Vosk / YAMNet)
+        </div>
+      </div>
+
+      <!-- Motion Analysis -->
+      <div class="engine-node-box" id="node-motion-analysis">
+        <div class="engine-node-title">
+          <span>🏃</span> Motion analysis
+        </div>
+        <div class="engine-node-desc">
+          Optional motion anomaly detection (TFLite Fall 4.5G & Struggle oscillations)
+        </div>
+      </div>
+
+      <!-- Trigger Engine -->
+      <div class="engine-node-box" id="node-trigger-engine">
+        <div class="engine-node-title">
+          <span>🤫</span> Trigger engine
+        </div>
+        <div class="engine-node-desc">
+          Secret gesture (Volume Down-Up-Down) and manual SOS
+        </div>
+      </div>
+
+      <!-- Context Engine -->
+      <div class="engine-node-box" id="node-context-engine">
+        <div class="engine-node-title">
+          <span>🧭</span> Context engine
+        </div>
+        <div class="engine-node-desc">
+          Safety session and check-ins (Late night transit & geofence monitoring)
+        </div>
+      </div>
+    </div>
+
+    <!-- Flow Arrow -->
+    <div class="flow-arrow-down">↓</div>
+
+    <!-- LAYER 3: AI DECISION ENGINE -->
+    <div class="arch-layer-box decision-engine-box" id="node-decision-engine">
+      <div class="arch-box-title" style="color: #c084fc;">
+        <span>🧠</span> AI DECISION ENGINE
+      </div>
+      <div class="arch-box-subtitle">
+        Signal fusion · Confidence · False-alert control
+      </div>
+    </div>
+
+    <!-- Flow Arrow -->
+    <div class="flow-arrow-down">↓</div>
+
+    <!-- LAYER 4: EMERGENCY RESPONSE ENGINE -->
+    <div class="arch-layer-box response-engine-box" id="node-response-engine">
+      <div class="arch-box-title" style="color: #fbbf24;">
+        <span>🚨</span> EMERGENCY RESPONSE ENGINE
+      </div>
+      <div class="arch-box-subtitle">
+        Incident creation · Location · Notification escalation
+      </div>
+    </div>
+
+    <!-- Flow Arrow -->
+    <div class="flow-arrow-down">↓</div>
+
+    <!-- LAYER 5: 2 DESTINATIONS -->
+    <div class="consumers-grid">
+      <div class="consumer-box" id="node-trusted-contacts">
+        <div class="arch-box-title" style="font-size: 0.95rem; color: #86efac;">
+          <span>👼</span> Trusted contacts
+        </div>
+        <div style="font-size: 0.8rem; color: #cbd5e1;">
+          SMS / Push alerts
+        </div>
+      </div>
+
+      <div class="consumer-box" id="node-web-dashboard">
+        <div class="arch-box-title" style="font-size: 0.95rem; color: #86efac;">
+          <span>🛰️</span> Web dashboard
+        </div>
+        <div style="font-size: 0.8rem; color: #cbd5e1;">
+          Incident tracking
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Interactive Signal Fusion Testbench / Sandbox -->
+  <div class="fusion-sandbox-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--surface-border); padding-bottom: 1rem;">
+      <div>
+        <h2 style="font-size: 1.3rem; font-weight: 800; color: #fff;">
+          <span>🧪</span> Live Signal Fusion & False-Alert Sandbox
+        </h2>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">
+          Drag the sensor sliders below to simulate multi-modal inputs and watch how the Sentinel AI Decision Engine evaluates threat levels and false-alert grace periods.
+        </p>
+      </div>
+      <span class="badge badge-active">Real-time AI Evaluator</span>
+    </div>
+
+    <div class="sandbox-controls-grid">
+      <!-- Voice AI Slider -->
+      <div class="slider-group">
+        <div class="slider-label">
+          <span>Voice AI Match Confidence</span>
+          <span class="slider-val" id="val-voice-score">85%</span>
+        </div>
+        <input type="range" id="slider-voice-score" class="custom-range" min="0" max="100" value="85">
+        <div style="font-size: 0.72rem; color: var(--text-dim);">Whisper speech keyword detection confidence</div>
+      </div>
+
+      <!-- Motion Anomaly Slider -->
+      <div class="slider-group">
+        <div class="slider-label">
+          <span>Motion Anomaly Intensity</span>
+          <span class="slider-val" id="val-motion-score">40%</span>
+        </div>
+        <input type="range" id="slider-motion-score" class="custom-range" min="0" max="100" value="40">
+        <div style="font-size: 0.72rem; color: var(--text-dim);">G-force impact shock & struggle oscillation</div>
+      </div>
+
+      <!-- Trigger Selection -->
+      <div class="slider-group">
+        <div class="slider-label">
+          <span>Trigger Source</span>
+        </div>
+        <select id="select-trigger-type" style="background: #0f172a; border: 1px solid var(--surface-border); color: #fff; padding: 0.55rem; border-radius: var(--radius-sm); font-size: 0.85rem;">
+          <option value="voice_distress">Voice Distress Phrase Spoken</option>
+          <option value="secret_gesture">Secret Volume Cadence (Down-Up-Down)</option>
+          <option value="stealth_hold">Discreet 1-Tap Screen Hold (3s)</option>
+          <option value="discreet_pin">Covert Calculator 911 PIN</option>
+          <option value="motion_anomaly">Autonomous Fall / Impact Shock</option>
+          <option value="session_timeout">Safety Session Check-in Overdue</option>
+        </select>
+        <div style="font-size: 0.72rem; color: var(--text-dim);">Physical or acoustic trigger origin</div>
+      </div>
+
+      <!-- Context Factors -->
+      <div class="slider-group">
+        <div class="slider-label">
+          <span>Context & Session State</span>
+        </div>
+        <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: #cbd5e1; cursor: pointer; margin-top: 4px;">
+          <input type="checkbox" id="check-active-session" checked> Active Safety Session Running
+        </label>
+        <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: #cbd5e1; cursor: pointer; margin-top: 4px;">
+          <input type="checkbox" id="check-overdue-session"> User Missed Timed Check-in
+        </label>
+      </div>
+    </div>
+
+    <!-- Real-time Live Decision Banner -->
+    <div class="fusion-result-banner">
+      <div>
+        <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Fused Threat Score</div>
+        <div style="display: flex; align-items: baseline; gap: 0.6rem; margin-top: 2px;">
+          <span id="sandbox-threat-score" style="font-size: 2rem; font-weight: 800; font-family: var(--font-mono); color: var(--crimson);">88%</span>
+          <span id="sandbox-threat-level" class="badge badge-critical">CRITICAL</span>
+        </div>
+      </div>
+
+      <div style="flex: 1; max-width: 480px;">
+        <div style="height: 8px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden; margin-bottom: 0.5rem;">
+          <div id="sandbox-gauge-fill" style="height: 100%; width: 88%; background: linear-gradient(90deg, #00e599 0%, #f59e0b 50%, #ff2a5f 100%); transition: width 0.3s ease;"></div>
+        </div>
+        <div id="sandbox-action-desc" style="font-size: 0.82rem;">
+          ⚡ <strong>Immediate Silent Escalation:</strong> High-priority alert broadcasted instantly to Angels & dispatch with live GPS.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/architecture.js') }}"></script>
+{% endblock %}

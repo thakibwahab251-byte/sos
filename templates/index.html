@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+
+{% block title %}SilentSOS - Intelligent Emergency Detection | Sentinel AI{% endblock %}
+
+{% block content %}
+<div style="display: flex; flex-direction: column; gap: 3rem;">
+
+  <!-- Hero Section matching Image 1 -->
+  <section class="glass-panel" style="padding: 3rem 2.5rem; position: relative; overflow: hidden;">
+    <div style="position: absolute; right: -80px; top: -80px; width: 350px; height: 350px; background: radial-gradient(circle, rgba(255, 42, 95, 0.15) 0%, transparent 70%); border-radius: 50%; pointer-events: none;"></div>
+    
+    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+      <span class="badge badge-active" style="font-size: 0.85rem; padding: 0.35rem 0.8rem;">
+        ⚡ AI + Safety
+      </span>
+      <span style="font-size: 0.85rem; color: var(--text-muted); font-family: var(--font-mono);">
+        PROJECT SENTINEL · TRINETRA CORE
+      </span>
+    </div>
+
+    <h1 style="font-size: 2.8rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 1.25rem;">
+      SilentSOS – <span style="background: var(--crimson-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Intelligent Emergency Detection</span>
+    </h1>
+
+    <p style="font-size: 1.15rem; color: var(--text-muted); max-width: 820px; line-height: 1.6; margin-bottom: 2rem;">
+      An emergency alert system engineered for life-critical situations where a person cannot unlock their phone, make calls, or communicate their location normally. Powered by real-time Voice AI, acoustic stress detection, and secret triggers.
+    </p>
+
+    <!-- Quick Action Launch Buttons -->
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2.5rem;">
+      <a href="{{ url_for('mobile_simulator') }}" class="btn btn-primary" style="font-size: 1rem; padding: 0.85rem 1.8rem;">
+        <span>📱</span> Launch Mobile Simulator
+      </a>
+      <a href="{{ url_for('dashboard') }}" class="btn btn-cyan" style="font-size: 1rem; padding: 0.85rem 1.8rem;">
+        <span>🛰️</span> Guardian Operations Center
+      </a>
+      <a href="{{ url_for('architecture') }}" class="btn btn-outline" style="font-size: 1rem; padding: 0.85rem 1.8rem;">
+        <span>🧠</span> Sentinel AI Architecture
+      </a>
+    </div>
+
+    <!-- Live Telemetry Quick Strip -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; border-top: 1px solid var(--surface-border); padding-top: 1.75rem;">
+      <div>
+        <div style="font-size: 0.78rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em;">Active Incidents</div>
+        <div style="font-size: 1.8rem; font-weight: 800; font-family: var(--font-mono); color: var(--crimson);">{{ active_incidents }}</div>
+      </div>
+      <div>
+        <div style="font-size: 0.78rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em;">Guardian Angels Registered</div>
+        <div style="font-size: 1.8rem; font-weight: 800; font-family: var(--font-mono); color: var(--emerald);">{{ total_contacts }}</div>
+      </div>
+      <div>
+        <div style="font-size: 0.78rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em;">Voice Distress Model</div>
+        <div style="font-size: 1.4rem; font-weight: 700; color: var(--cyan); margin-top: 4px;">Whisper / Vosk Edge</div>
+      </div>
+      <div>
+        <div style="font-size: 0.78rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em;">False-Alarm Control</div>
+        <div style="font-size: 1.4rem; font-weight: 700; color: #a855f7; margin-top: 4px;">Signal Fusion (99.2%)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problem vs Innovation Breakdown (Image 1 Specifications) -->
+  <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 1.75rem;">
+    <!-- Problem Card -->
+    <div class="glass-panel" style="border-left: 4px solid var(--crimson);">
+      <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.8rem;">
+        <span style="font-size: 1.4rem;">⚠️</span>
+        <h2 style="font-size: 1.3rem; font-weight: 800; color: #fff;">The Core Problem</h2>
+      </div>
+      <p style="font-size: 1.05rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 1.25rem;">
+        <strong>During emergencies, people might not be able to unlock their phones, make calls or communicate their location.</strong>
+      </p>
+      <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.75rem; color: var(--text-muted); font-size: 0.95rem;">
+        <li style="display: flex; align-items: flex-start; gap: 0.5rem;">
+          <span style="color: var(--crimson);">✕</span> Assailants or hostile situations make taking out and typing on a phone dangerous.
+        </li>
+        <li style="display: flex; align-items: flex-start; gap: 0.5rem;">
+          <span style="color: var(--crimson);">✕</span> Biometric face/fingerprint unlock often fails under physical struggle or stress.
+        </li>
+        <li style="display: flex; align-items: flex-start; gap: 0.5rem;">
+          <span style="color: var(--crimson);">✕</span> Dialing 911 verbally alerts the attacker and escalates immediate physical danger.
+        </li>
+        <li style="display: flex; align-items: flex-start; gap: 0.5rem;">
+          <span style="color: var(--crimson);">✕</span> Victims frequently cannot specify their exact street address when fleeing.
+        </li>
+      </ul>
+    </div>
+
+    <!-- Innovation Card -->
+    <div class="glass-panel" style="border-left: 4px solid var(--emerald);">
+      <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.8rem;">
+        <span style="font-size: 1.4rem;">✨</span>
+        <h2 style="font-size: 1.3rem; font-weight: 800; color: #fff;">Our Innovation</h2>
+      </div>
+      <p style="font-size: 0.95rem; color: var(--emerald); font-weight: 600; margin-bottom: 1rem;">
+        Discreet, multi-modal emergency detection that acts autonomously on hidden cues:
+      </p>
+      <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.75rem; color: #cbd5e1; font-size: 0.95rem;">
+        <li style="display: flex; align-items: flex-start; gap: 0.5rem;">
+          <span style="color: var(--emerald); font-weight: bold;">✓</span>
+          <span><strong>Voice-triggered emergency activation:</strong> Continually processes audio with background Whisper/Vosk keyword spotting.</span>
+        </li>
+        <li style="display: flex; align-items: flex-start; gap: 0.5rem;">
+          <span style="color: var(--emerald); font-weight: bold;">✓</span>
+          <span><strong>Discreet emergency alert:</strong> Silent activation without bright screen flashes, sounds, or visual feedback.</span>
+        </li>
+        <li style="display: flex; align-items: flex-start; gap: 0.5rem;">
+          <span style="color: var(--emerald); font-weight: bold;">✓</span>
+          <span><strong>Location sharing with trusted contacts:</strong> High-precision real-time GPS telemetry sent to Angel guardians.</span>
+        </li>
+        <li style="display: flex; align-items: flex-start; gap: 0.5rem;">
+          <span style="color: var(--emerald); font-weight: bold;">✓</span>
+          <span><strong>Detects predefined distress phrases:</strong> Recognizes "someone is following me", "help me", or custom codewords like "pineapple".</span>
+        </li>
+        <li style="display: flex; align-items: flex-start; gap: 0.5rem;">
+          <span style="color: var(--emerald); font-weight: bold;">✓</span>
+          <span><strong>Hidden triggers:</strong> Physical volume key cadence (Down-Up-Down) or covert calculator disguise.</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Technical Stack Specification Table (Matching Image 3) -->
+  <section class="glass-panel">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <h2 style="font-size: 1.4rem; font-weight: 800; color: #fff;">System Architecture & Technology Stack</h2>
+        <p style="font-size: 0.88rem; color: var(--text-muted);">Exact production specification matching Sentinel AI blueprint (Image 3)</p>
+      </div>
+      <a href="{{ url_for('architecture') }}" class="btn btn-outline" style="font-size: 0.85rem;">
+        Interactive Architecture Diagram →
+      </a>
+    </div>
+
+    <div style="overflow-x: auto;">
+      <table style="width: 100%; border-collapse: collapse; font-size: 0.92rem; text-align: left;">
+        <thead>
+          <tr style="border-bottom: 1px solid var(--surface-border-bright); color: var(--text-muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em;">
+            <th style="padding: 0.75rem 1rem;">Component</th>
+            <th style="padding: 0.75rem 1rem;">Recommended Technology</th>
+            <th style="padding: 0.75rem 1rem;">Live Implementation in this Platform</th>
+            <th style="padding: 0.75rem 1rem;">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom: 1px solid var(--surface-border);">
+            <td style="padding: 0.9rem 1rem; font-weight: 600; color: #fff;">Mobile Application</td>
+            <td style="padding: 0.9rem 1rem; color: var(--cyan);">Flutter</td>
+            <td style="padding: 0.9rem 1rem;">Interactive Web Phone Simulator with Safe/Emergency Modes</td>
+            <td style="padding: 0.9rem 1rem;"><span class="badge badge-resolved">Operational</span></td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--surface-border);">
+            <td style="padding: 0.9rem 1rem; font-weight: 600; color: #fff;">Backend</td>
+            <td style="padding: 0.9rem 1rem; color: var(--cyan);">Python + Flask / FastAPI</td>
+            <td style="padding: 0.9rem 1rem;">Production Flask 3.1 WSGI app with Server-Sent Events (SSE)</td>
+            <td style="padding: 0.9rem 1rem;"><span class="badge badge-resolved">Active</span></td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--surface-border);">
+            <td style="padding: 0.9rem 1rem; font-weight: 600; color: #fff;">Voice Recognition</td>
+            <td style="padding: 0.9rem 1rem; color: var(--cyan);">Whisper / Vosk</td>
+            <td style="padding: 0.9rem 1rem;">Web Speech API continuous speech + Fuzzy keyword pattern matcher</td>
+            <td style="padding: 0.9rem 1rem;"><span class="badge badge-resolved">Armed</span></td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--surface-border);">
+            <td style="padding: 0.9rem 1rem; font-weight: 600; color: #fff;">Audio Classification</td>
+            <td style="padding: 0.9rem 1rem; color: var(--cyan);">YAMNet / CNN</td>
+            <td style="padding: 0.9rem 1rem;">Acoustic stress analyzer (pitch jitter, scream & distress event classifier)</td>
+            <td style="padding: 0.9rem 1rem;"><span class="badge badge-resolved">Armed</span></td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--surface-border);">
+            <td style="padding: 0.9rem 1rem; font-weight: 600; color: #fff;">Motion Analysis</td>
+            <td style="padding: 0.9rem 1rem; color: var(--cyan);">TensorFlow Lite</td>
+            <td style="padding: 0.9rem 1rem;">Accelerometer impact shock (>3.5G) & struggle oscillation detection</td>
+            <td style="padding: 0.9rem 1rem;"><span class="badge badge-resolved">Armed</span></td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--surface-border);">
+            <td style="padding: 0.9rem 1rem; font-weight: 600; color: #fff;">Location</td>
+            <td style="padding: 0.9rem 1rem; color: var(--cyan);">Android GPS + Maps SDK</td>
+            <td style="padding: 0.9rem 1rem;">Leaflet.js + HTML5 Geolocation with real-time breadcrumbs</td>
+            <td style="padding: 0.9rem 1rem;"><span class="badge badge-resolved">Real-time</span></td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--surface-border);">
+            <td style="padding: 0.9rem 1rem; font-weight: 600; color: #fff;">Notifications</td>
+            <td style="padding: 0.9rem 1rem; color: var(--cyan);">Firebase Cloud Messaging</td>
+            <td style="padding: 0.9rem 1rem;">Instant Angel SMS alert dispatch engine + Web Audio Siren alerts</td>
+            <td style="padding: 0.9rem 1rem;"><span class="badge badge-resolved">Connected</span></td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--surface-border);">
+            <td style="padding: 0.9rem 1rem; font-weight: 600; color: #fff;">Database</td>
+            <td style="padding: 0.9rem 1rem; color: var(--cyan);">PostgreSQL / SQLite</td>
+            <td style="padding: 0.9rem 1rem;">SQLite3 WAL mode with full audit trail logs and contacts schema</td>
+            <td style="padding: 0.9rem 1rem;"><span class="badge badge-resolved">Ready</span></td>
+          </tr>
+          <tr>
+            <td style="padding: 0.9rem 1rem; font-weight: 600; color: #fff;">Dashboard</td>
+            <td style="padding: 0.9rem 1rem; color: var(--cyan);">React / Web Dashboard</td>
+            <td style="padding: 0.9rem 1rem;">Guardian Operations Command Center with Live Map & Threat Matrix</td>
+            <td style="padding: 0.9rem 1rem;"><span class="badge badge-resolved">Live</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+{% endblock %}

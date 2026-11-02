@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+
+{% block title %}Guardian Operations & Incident Tracking Dashboard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+
+  <!-- Header & Live System Status -->
+  <div class="dashboard-header">
+    <div class="dashboard-title-wrap">
+      <h1>
+        <span>🛰️</span> Incident Tracking & Guardian Command Center
+      </h1>
+      <p style="font-size: 0.9rem; color: var(--text-muted);">
+        Real-time Sentinel AI telemetry, live geospatial breadcrumbs, and multi-tier emergency dispatch.
+      </p>
+    </div>
+
+    <div style="display: flex; gap: 0.75rem; align-items: center;">
+      <a href="{{ url_for('mobile_simulator') }}" target="_blank" class="btn btn-outline" style="font-size: 0.85rem;">
+        <span>📱</span> Open Mobile Simulator
+      </a>
+      <button class="btn btn-primary" onclick="SentinelAudio.playEmergencyAlarm(); showToast('Siren Test', 'Emergency dispatch alarm test triggered.', 'danger');" style="font-size: 0.85rem;">
+        <span>📢</span> Test Siren Sound
+      </button>
+    </div>
+  </div>
+
+  <!-- Key Metrics Row -->
+  <div class="dashboard-metrics-grid">
+    <div class="metric-card danger">
+      <div class="metric-icon-box">🚨</div>
+      <div class="metric-info">
+        <div class="metric-num" id="metric-active-count">{{ active_count }}</div>
+        <div class="metric-lbl">Active Emergencies</div>
+      </div>
+    </div>
+
+    <div class="metric-card success">
+      <div class="metric-icon-box">👼</div>
+      <div class="metric-info">
+        <div class="metric-num">{{ contacts|length }}</div>
+        <div class="metric-lbl">Angels on Standby</div>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon-box">🎙️</div>
+      <div class="metric-info">
+        <div class="metric-num" style="font-size: 1.25rem;">Whisper / Vosk</div>
+        <div class="metric-lbl">Voice Distress AI</div>
+      </div>
+    </div>
+
+    <div class="metric-card purple">
+      <div class="metric-icon-box">🧠</div>
+      <div class="metric-info">
+        <div class="metric-num" style="font-size: 1.25rem;">Signal Fusion</div>
+        <div class="metric-lbl">Decision Engine</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3-Column Ops Center Grid -->
+  <div class="ops-grid">
+
+    <!-- Column 1: Incident Feed Stream -->
+    <div class="ops-panel">
+      <div class="panel-header">
+        <h3><span>📋</span> Incident Stream</h3>
+        <span class="badge badge-active" style="font-size: 0.65rem;">LIVE SSE</span>
+      </div>
+
+      <div class="incident-filter-bar">
+        <button class="filter-tab active" data-filter="all">All</button>
+        <button class="filter-tab" data-filter="active">Active</button>
+        <button class="filter-tab" data-filter="escalated">Escalated</button>
+        <button class="filter-tab" data-filter="resolved">Resolved</button>
+      </div>
+
+      <div class="incident-feed-list" id="incident-feed-container">
+        {% for inc in incidents %}
+        <div class="incident-feed-item {% if loop.first %}selected{% endif %}"
+             id="incident-item-{{ inc.id }}"
+             data-id="{{ inc.id }}"
+             data-status="{{ inc.status }}">
+          <div class="item-top-row">
+            <span class="item-code">{{ inc.incident_code }}</span>
+            <span id="badge-inc-{{ inc.id }}" class="badge badge-{{ inc.status|lower }}">{{ inc.status }}</span>
+          </div>
+          <div class="item-trigger-phrase">
+            <span>🚨</span> "{{ inc.distress_phrase or 'Emergency Trigger' }}"
+          </div>
+          <div class="item-location-meta">
+            <span>📍</span> {{ inc.address or 'San Francisco, CA' }} · <span>⚡ {{ inc.threat_score }}% Threat</span>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Column 2: Center Interactive Command Map -->
+    <div class="ops-map-wrapper">
+      <div class="map-floating-overlay">
+        <span class="status-pulse"></span>
+        <span style="font-weight: 700; color: #fff;">GPS Telemetry Stream:</span>
+        <span style="color: var(--cyan); font-family: var(--font-mono);">3D Lock (±5m)</span>
+      </div>
+
+      <div class="map-controls-overlay">
+        <button id="btn-recenter-map" class="btn btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.65rem; background: rgba(13, 18, 29, 0.9);">
+          🎯 Recenter
+        </button>
+      </div>
+
+      <div id="dashboard-map"></div>
+    </div>
+
+    <!-- Column 3: Incident Telemetry & Escalation Controls -->
+    <div class="ops-right-panel">
+
+      <!-- Telemetry Details Card -->
+      <div class="telemetry-card">
+        <div class="telemetry-header">
+          <span>Incident Telemetry</span>
+          <span id="detail-status-badge" class="badge badge-critical">ACTIVE</span>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem;">
+          <h2 id="detail-incident-code" style="font-size: 1.35rem; font-family: var(--font-mono); color: #fff; font-weight: 800;">
+            INC-84920
+          </h2>
+          <span style="font-size: 0.8rem; color: var(--text-muted);">User: <strong id="detail-user-name" style="color: #fff;">Sophia Lin</strong></span>
+        </div>
+
+        <!-- Threat Score Gauge -->
+        <div class="threat-score-gauge">
+          <div class="threat-meta-row">
+            <span>AI Threat Confidence Score</span>
+            <strong id="detail-threat-score" style="color: var(--crimson); font-family: var(--font-mono); font-size: 0.95rem;">88%</strong>
+          </div>
+          <div class="gauge-bar-wrapper">
+            <div class="gauge-fill" id="detail-gauge-fill" style="width: 88%;"></div>
+          </div>
+          <div style="font-size: 0.72rem; color: var(--text-dim); display: flex; justify-content: space-between;">
+            <span>0% (Safe)</span>
+            <span>Signal Fusion Matrix</span>
+            <span>100% (Critical)</span>
+          </div>
+        </div>
+
+        <!-- Key Properties -->
+        <div style="display: flex; flex-direction: column; gap: 0.55rem; font-size: 0.82rem; margin-bottom: 1rem;">
+          <div>
+            <span style="color: var(--text-muted);">Distress Trigger:</span>
+            <div id="detail-phrase" style="font-weight: 700; color: #fff; margin-top: 2px;">"someone is following me"</div>
+          </div>
+          <div>
+            <span style="color: var(--text-muted);">Audio Classification:</span>
+            <div id="detail-audio-class" style="color: var(--cyan); font-family: var(--font-mono); font-size: 0.75rem; margin-top: 2px;">
+              Distress Keyword + Elevated Stress Acoustics
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; border-top: 1px solid var(--surface-border); padding-top: 0.5rem;">
+            <span>Battery Level: <strong id="detail-battery" style="color: #fff;">76%</strong></span>
+            <span>Motion: <strong id="detail-motion-state" style="color: var(--emerald);">Rapid Pace / Tremor</strong></span>
+          </div>
+          <div>
+            <span style="color: var(--text-muted);">Current Location:</span>
+            <div id="detail-address" style="color: #cbd5e1; font-size: 0.78rem;">4th St & Mission St, San Francisco, CA</div>
+          </div>
+        </div>
+
+        <!-- Action Control Buttons -->
+        <div class="escalate-actions-bar">
+          <button id="btn-escalate-911" class="btn btn-primary" title="Escalate to 911 / Police Dispatch">
+            🚨 Escalate 911
+          </button>
+          <button id="btn-resolve-incident" class="btn btn-emerald" title="Mark Incident Safely Resolved">
+            🛡️ Mark Resolved
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Incident Audit Trail Card -->
+      <div class="telemetry-card" style="flex: 1;">
+        <div class="telemetry-header">
+          <span>Live Activity Audit Trail</span>
+          <span style="font-size: 0.72rem; color: var(--cyan); font-family: var(--font-mono);">ENCRYPTED LOG</span>
+        </div>
+
+        <div class="incident-logs-timeline" id="incident-logs-container">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

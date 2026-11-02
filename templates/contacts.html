@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}Guardian Angels & Responders | SilentSOS{% endblock %}
+
+{% block content %}
+<div style="display: flex; flex-direction: column; gap: 2rem;">
+
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <h1 style="font-size: 1.8rem; font-weight: 800; color: #fff;">
+        <span>👼</span> Guardian Angels & Emergency Contacts
+      </h1>
+      <p style="font-size: 0.9rem; color: var(--text-muted);">
+        Trusted individuals notified immediately via high-priority SMS and automated voice call during silent SOS escalations.
+      </p>
+    </div>
+    <button class="btn btn-primary" onclick="document.getElementById('add-contact-modal').style.display='flex'">
+      <span>+</span> Add Guardian Angel
+    </button>
+  </div>
+
+  <!-- Contacts Grid -->
+  <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.25rem;">
+    {% for c in contacts %}
+    <div class="glass-panel" style="position: relative; {% if c.is_primary %}border-color: rgba(157, 78, 221, 0.4); background: rgba(157, 78, 221, 0.08);{% endif %}">
+      {% if c.is_primary %}
+      <div style="position: absolute; top: 12px; right: 12px;">
+        <span class="badge" style="background: rgba(157, 78, 221, 0.2); color: #d8b4fe; border: 1px solid rgba(157, 78, 221, 0.4);">
+          Primary Angel
+        </span>
+      </div>
+      {% endif %}
+
+      <div style="display: flex; align-items: center; gap: 0.85rem; margin-bottom: 1rem;">
+        <div style="width: 44px; height: 44px; border-radius: 50%; background: var(--purple-glow); border: 2px solid var(--purple); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 800; color: #fff;">
+          {{ c.name[0] }}
+        </div>
+        <div>
+          <h3 style="font-size: 1.1rem; font-weight: 700; color: #fff;">{{ c.name }}</h3>
+          <div style="font-size: 0.8rem; color: var(--cyan);">{{ c.relationship }}</div>
+        </div>
+      </div>
+
+      <div style="font-size: 0.85rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1.25rem;">
+        <div>📞 Phone: <strong style="color: #fff; font-family: var(--font-mono);">{{ c.phone }}</strong></div>
+        <div>✉️ Email: <strong style="color: #cbd5e1;">{{ c.email }}</strong></div>
+        <div style="display: flex; gap: 0.5rem; margin-top: 4px;">
+          <span class="badge badge-active" style="font-size: 0.68rem;">{% if c.notify_sms %}SMS Dispatched{% endif %}</span>
+          <span class="badge badge-resolved" style="font-size: 0.68rem;">{% if c.notify_call %}Call Alert{% endif %}</span>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 0.5rem; border-top: 1px solid var(--surface-border); padding-top: 0.75rem;">
+        <a href="tel:{{ c.phone }}" class="btn btn-outline" style="flex: 1; font-size: 0.78rem; padding: 0.45rem;">
+          <span>📞</span> Call
+        </a>
+        <button class="btn btn-outline" onclick="deleteContact({{ c.id }})" style="color: var(--crimson); border-color: rgba(255, 42, 95, 0.3); font-size: 0.78rem; padding: 0.45rem 0.75rem;">
+          Remove
+        </button>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Add Contact Modal -->
+  <div id="add-contact-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(10px); z-index: 9999; align-items: center; justify-content: center; padding: 1.5rem;">
+    <div class="glass-panel" style="max-width: 480px; width: 100%; border: 1px solid var(--surface-border-bright);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+        <h3 style="font-size: 1.2rem; font-weight: 700; color: #fff;">Add Guardian Angel</h3>
+        <button onclick="document.getElementById('add-contact-modal').style.display='none'" style="background: none; border: none; color: #fff; font-size: 1.25rem; cursor: pointer;">✕</button>
+      </div>
+
+      <form id="form-add-contact" onsubmit="submitAddContact(event)">
+        <div style="display: flex; flex-direction: column; gap: 0.85rem; margin-bottom: 1.25rem;">
+          <div>
+            <label style="font-size: 0.78rem; color: var(--text-muted); display: block; margin-bottom: 4px;">Full Name</label>
+            <input type="text" id="contact-name" required placeholder="e.g. Sarah Jenkins" style="width: 100%; padding: 0.65rem; border-radius: var(--radius-sm); background: #0b111e; border: 1px solid var(--surface-border); color: #fff;">
+          </div>
+          <div>
+            <label style="font-size: 0.78rem; color: var(--text-muted); display: block; margin-bottom: 4px;">Relationship</label>
+            <input type="text" id="contact-rel" required placeholder="e.g. Sister, Roommate, Campus Patrol" style="width: 100%; padding: 0.65rem; border-radius: var(--radius-sm); background: #0b111e; border: 1px solid var(--surface-border); color: #fff;">
+          </div>
+          <div>
+            <label style="font-size: 0.78rem; color: var(--text-muted); display: block; margin-bottom: 4px;">Phone Number (E.164 or Local)</label>
+            <input type="tel" id="contact-phone" required placeholder="+1 (555) 000-0000" style="width: 100%; padding: 0.65rem; border-radius: var(--radius-sm); background: #0b111e; border: 1px solid var(--surface-border); color: #fff;">
+          </div>
+          <div>
+            <label style="font-size: 0.78rem; color: var(--text-muted); display: block; margin-bottom: 4px;">Email Address</label>
+            <input type="email" id="contact-email" placeholder="sarah@example.com" style="width: 100%; padding: 0.65rem; border-radius: var(--radius-sm); background: #0b111e; border: 1px solid var(--surface-border); color: #fff;">
+          </div>
+          <div style="display: flex; gap: 1rem; align-items: center; margin-top: 4px;">
+            <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.82rem; color: #fff; cursor: pointer;">
+              <input type="checkbox" id="contact-primary"> Make Primary Angel
+            </label>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
+          <button type="button" class="btn btn-outline" onclick="document.getElementById('add-contact-modal').style.display='none'">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Angel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<script>
+async function submitAddContact(e) {
+  e.preventDefault();
+  const name = document.getElementById('contact-name').value;
+  const relationship = document.getElementById('contact-rel').value;
+  const phone = document.getElementById('contact-phone').value;
+  const email = document.getElementById('contact-email').value;
+  const is_primary = document.getElementById('contact-primary').checked;
+
+  const res = await fetch('/api/contacts', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, relationship, phone, email, is_primary })
+  });
+
+  if (res.ok) {
+    showToast("Angel Added", `${name} added to your emergency guardian circle.`, "success");
+    setTimeout(() => window.location.reload(), 600);
+  }
+}
+
+async function deleteContact(id) {
+  if (confirm("Remove this Guardian Angel from your emergency alerts?")) {
+    const res = await fetch(`/api/contacts/${id}`, { method: 'DELETE' });
+    if (res.ok) {
+      showToast("Angel Removed", "Contact deleted.", "info");
+      setTimeout(() => window.location.reload(), 600);
+    }
+  }
+}
+</script>
+{% endblock %}

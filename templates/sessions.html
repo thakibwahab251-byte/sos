@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}Safety Sessions & Timed Route Guard | SilentSOS{% endblock %}
+
+{% block content %}
+<div style="display: flex; flex-direction: column; gap: 2rem;">
+
+  <!-- Header -->
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <h1 style="font-size: 1.8rem; font-weight: 800; color: #fff;">
+        <span>⏱️</span> Safety Sessions & Timed Route Guard
+      </h1>
+      <p style="font-size: 0.9rem; color: var(--text-muted);">
+        Activate proactive monitoring when walking alone or travelling late. If you don't check in before the countdown expires, Sentinel AI automatically dispatches an SOS.
+      </p>
+    </div>
+    <button class="btn btn-emerald" onclick="document.getElementById('start-session-modal').style.display='flex'">
+      <span>+</span> Start New Safety Session
+    </button>
+  </div>
+
+  <!-- Active Session Highlights Card -->
+  <div class="glass-panel" style="border-left: 4px solid var(--emerald); background: rgba(0, 229, 153, 0.05);">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem;">
+          <span class="status-pulse"></span>
+          <span class="badge badge-resolved">ACTIVE SESSION IN PROGRESS</span>
+        </div>
+        <h2 style="font-size: 1.35rem; font-weight: 800; color: #fff;">
+          Late Transit Home from Downtown
+        </h2>
+        <div style="font-size: 0.85rem; color: var(--text-muted);">
+          Destination: <strong style="color: #fff;">742 Evergreen Terrace, North Heights</strong> · Check-in interval: 10 mins
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem; align-items: center;">
+        <button class="btn btn-emerald" onclick="performCheckIn(1)">
+          <span>✅</span> I Am Safe (Check In)
+        </button>
+        <button class="btn btn-outline" onclick="endSession(1)" style="font-size: 0.85rem;">
+          End Session Safely
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sessions List Table -->
+  <div class="glass-panel">
+    <h3 style="font-size: 1.15rem; font-weight: 700; color: #fff; margin-bottom: 1rem;">
+      Session History & Route Audit Logs
+    </h3>
+
+    <div style="overflow-x: auto;">
+      <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; text-align: left;">
+        <thead>
+          <tr style="border-bottom: 1px solid var(--surface-border-bright); color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase;">
+            <th style="padding: 0.75rem 1rem;">Session Code</th>
+            <th style="padding: 0.75rem 1rem;">Title / Route</th>
+            <th style="padding: 0.75rem 1rem;">Target Destination</th>
+            <th style="padding: 0.75rem 1rem;">Duration</th>
+            <th style="padding: 0.75rem 1rem;">Status</th>
+            <th style="padding: 0.75rem 1rem;">Last Check-In</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in sessions %}
+          <tr style="border-bottom: 1px solid var(--surface-border);">
+            <td style="padding: 0.85rem 1rem; font-family: var(--font-mono); font-weight: 700; color: var(--cyan);">
+              {{ s.session_code }}
+            </td>
+            <td style="padding: 0.85rem 1rem; font-weight: 600; color: #fff;">
+              {{ s.title }}
+            </td>
+            <td style="padding: 0.85rem 1rem; color: var(--text-muted);">
+              {{ s.target_destination or 'Home' }}
+            </td>
+            <td style="padding: 0.85rem 1rem; color: var(--text-muted);">
+              {{ s.duration_minutes }} mins
+            </td>
+            <td style="padding: 0.85rem 1rem;">
+              <span class="badge {% if s.status == 'ACTIVE' %}badge-active{% else %}badge-resolved{% endif %}">
+                {{ s.status }}
+              </span>
+            </td>
+            <td style="padding: 0.85rem 1rem; font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-dim);">
+              {{ s.last_checkin }}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Start Session Modal -->
+  <div id="start-session-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(10px); z-index: 9999; align-items: center; justify-content: center; padding: 1.5rem;">
+    <div class="glass-panel" style="max-width: 480px; width: 100%; border: 1px solid var(--surface-border-bright);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+        <h3 style="font-size: 1.2rem; font-weight: 700; color: #fff;">Start New Safety Session</h3>
+        <button onclick="document.getElementById('start-session-modal').style.display='none'" style="background: none; border: none; color: #fff; font-size: 1.25rem; cursor: pointer;">✕</button>
+      </div>
+
+      <form id="form-start-session" onsubmit="submitStartSession(event)">
+        <div style="display: flex; flex-direction: column; gap: 0.85rem; margin-bottom: 1.25rem;">
+          <div>
+            <label style="font-size: 0.78rem; color: var(--text-muted); display: block; margin-bottom: 4px;">Session Title / Activity</label>
+            <input type="text" id="session-title" required placeholder="e.g. Walking home through downtown park" style="width: 100%; padding: 0.65rem; border-radius: var(--radius-sm); background: #0b111e; border: 1px solid var(--surface-border); color: #fff;">
+          </div>
+          <div>
+            <label style="font-size: 0.78rem; color: var(--text-muted); display: block; margin-bottom: 4px;">Destination</label>
+            <input type="text" id="session-destination" required placeholder="e.g. Apartment, Dorm, North Station" style="width: 100%; padding: 0.65rem; border-radius: var(--radius-sm); background: #0b111e; border: 1px solid var(--surface-border); color: #fff;">
+          </div>
+          <div>
+            <label style="font-size: 0.78rem; color: var(--text-muted); display: block; margin-bottom: 4px;">Duration (Minutes)</label>
+            <input type="number" id="session-duration" value="20" min="5" max="180" style="width: 100%; padding: 0.65rem; border-radius: var(--radius-sm); background: #0b111e; border: 1px solid var(--surface-border); color: #fff;">
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
+          <button type="button" class="btn btn-outline" onclick="document.getElementById('start-session-modal').style.display='none'">Cancel</button>
+          <button type="submit" class="btn btn-emerald">Arm Safety Guard</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<script>
+async function performCheckIn(id) {
+  const res = await fetch(`/api/sessions/${id}/checkin`, { method: 'POST' });
+  if (res.ok) {
+    SentinelAudio.playSafeChime();
+    showToast("Check-In Confirmed", "Angels notified you are safe on your route.", "success");
+    setTimeout(() => window.location.reload(), 800);
+  }
+}
+
+async function endSession(id) {
+  if (confirm("End this safety session?")) {
+    const res = await fetch(`/api/sessions/${id}/end`, { method: 'POST' });
+    if (res.ok) {
+      SentinelAudio.playSafeChime();
+      showToast("Session Ended Safely", "Journey completed.", "info");
+      setTimeout(() => window.location.reload(), 800);
+    }
+  }
+}
+
+async function submitStartSession(e) {
+  e.preventDefault();
+  const title = document.getElementById('session-title').value;
+  const destination = document.getElementById('session-destination').value;
+  const duration_minutes = parseInt(document.getElementById('session-duration').value);
+
+  const res = await fetch('/api/sessions/start', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ title, destination, duration_minutes })
+  });
+
+  if (res.ok) {
+    SentinelAudio.playSafeChime();
+    showToast("Safety Session Armed", "Sentinel AI route timer active.", "success");
+    setTimeout(() => window.location.reload(), 700);
+  }
+}
+</script>
+{% endblock %}
